@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next';
+import { FiCalendar, FiUser } from 'react-icons/fi';
 
 import { getPrismicClient } from '../services/prismic';
 
@@ -25,7 +26,60 @@ interface HomeProps {
 }
 
 export default function Home(): JSX.Element {
-  return <h1>Hello</h1>;
+  return (
+    <main className={styles.container}>
+      <div>
+        <h2>Como utilizar Hooks</h2>
+        <p>Pensando em sincronização em vez de ciclos de vida.</p>
+        <div>
+          <span>
+            <FiCalendar /> 15 Mar 2021
+          </span>
+          <span>
+            <FiUser /> Jailson de Oliveira
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <h2>Como utilizar Hooks</h2>
+        <p>Pensando em sincronização em vez de ciclos de vida.</p>
+        <div>
+          <span>
+            <FiCalendar /> 15 Mar 2021
+          </span>
+          <span>
+            <FiUser /> Jailson de Oliveira
+          </span>
+        </div>
+      </div>
+      <div>
+        <h2>Como utilizar Hooks</h2>
+        <p>Pensando em sincronização em vez de ciclos de vida.</p>
+        <div>
+          <span>
+            <FiCalendar /> 15 Mar 2021
+          </span>
+          <span>
+            <FiUser /> Jailson de Oliveira
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <h2>Como utilizar Hooks</h2>
+        <p>Pensando em sincronização em vez de ciclos de vida.</p>
+        <div>
+          <span>
+            <FiCalendar /> 15 Mar 2021
+          </span>
+          <span>
+            <FiUser /> Jailson de Oliveira
+          </span>
+        </div>
+      </div>
+    </main>
+  );
 }
 
 // export const getStaticProps = async () => {
