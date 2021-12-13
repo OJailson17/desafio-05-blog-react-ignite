@@ -5,11 +5,11 @@
 }
 
 :root {
-  --background: #1A1D23;
-  --pink-900: #FF57B2;
-  --white: #F8F8F8;
-  --gray-400: #BBBBBB;
-  --gray-100: #D7D7D7;
+  --background: #1a1d23;
+  --pink-900: #ff57b2;
+  --white: #f8f8f8;
+  --gray-400: #bbbbbb;
+  --gray-100: #d7d7d7;
 }
 
 @media (min-width: 1080px) {
@@ -24,7 +24,12 @@
   }
 }
 
-body, input, button, text-area, span {
+body,
+input,
+button,
+text-area,
+span {
+  background: var(--background);
   font-family: 'Inter', sans-serif;
 }
 
