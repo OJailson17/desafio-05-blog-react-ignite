@@ -39,7 +39,7 @@ export default function Post(): JSX.Element {
       <article className={styles.container}>
         <h1>Criando um app CRA do zero</h1>
 
-        <div>
+        <div className={commonStyles.postInfo}>
           <span>
             <FiCalendar /> 15 Mar 2021
           </span>

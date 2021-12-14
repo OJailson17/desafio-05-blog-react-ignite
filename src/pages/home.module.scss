@@ -16,17 +16,6 @@
       margin-bottom: 24px;
     }
 
-    div {
-      span {
-        color: var(--gray-400);
-        font-size: 14px;
-
-        & + span {
-          margin-left: 24px;
-        }
-      }
-    }
-
     & + div {
       margin-top: 50px;
     }
