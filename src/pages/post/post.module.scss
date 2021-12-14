@@ -1,1 +1,68 @@
-// TODO
+.header {
+  width: 100%;
+  height: 400px;
+  position: relative;
+}
+
+.container {
+  width: 50%;
+  margin: 0 auto;
+
+  h1 {
+    font-size: 48px;
+    color: var(--white);
+    margin: 80px 0 25px 0;
+  }
+
+  > div {
+    margin-bottom: 65px;
+    span {
+      color: var(--gray-400);
+      font-size: 14px;
+
+      & + span {
+        margin-left: 24px;
+      }
+    }
+  }
+
+  section {
+    font-size: 18px;
+    line-height: 1.5;
+
+    h2 {
+      color: var(--white);
+      font-size: 35px;
+      margin-bottom: 40px;
+    }
+
+    p {
+      color: var(--gray-100);
+      & + p {
+        margin-top: 25px;
+      }
+    }
+
+    ul li {
+      color: var(--gray-100);
+      margin: 20px 0;
+      list-style-type: disc;
+    }
+
+    a {
+      color: var(--pink-900);
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    span {
+      color: var(--gray-100);
+    }
+
+    & + section {
+      margin-top: 40px;
+    }
+  }
+}
