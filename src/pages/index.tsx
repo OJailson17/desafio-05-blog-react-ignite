@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next';
+import Link from 'next/link';
 import Head from 'next/head';
 import { FiCalendar, FiUser } from 'react-icons/fi';
 import Prismic from '@prismicio/client';
@@ -37,20 +38,23 @@ export default function Home({
       <Head>
         <title>Home | Blog</title>
       </Head>
+
       <main className={styles.container}>
         {results.map(post => (
-          <div key={post.uid}>
-            <h2>{post.data?.title}</h2>
-            <p>{post.data?.subtitle}</p>
-            <div className={commonStyles.postInfo}>
-              <span>
-                <FiCalendar /> {formatDate(post.first_publication_date)}
-              </span>
-              <span>
-                <FiUser /> {post.data?.author}
-              </span>
+          <Link href={`/post/${post.uid}`} key={post.uid}>
+            <div>
+              <h2>{post.data?.title}</h2>
+              <p>{post.data?.subtitle}</p>
+              <div className={commonStyles.postInfo}>
+                <span>
+                  <FiCalendar /> {formatDate(post.first_publication_date)}
+                </span>
+                <span>
+                  <FiUser /> {post.data?.author}
+                </span>
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </main>
     </>
