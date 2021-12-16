@@ -32,9 +32,10 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  readingTime: number;
 }
 
-export default function Post({ post }: PostProps): JSX.Element {
+export default function Post({ post, readingTime }: PostProps): JSX.Element {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -62,7 +63,7 @@ export default function Post({ post }: PostProps): JSX.Element {
             <FiUser /> {post.data.author}
           </span>
           <span>
-            <FiClock /> 4 min
+            <FiClock /> {readingTime} min
           </span>
         </div>
 
@@ -123,9 +124,21 @@ export const getStaticProps: GetStaticProps = async context => {
     },
   };
 
+  // Pega todo o texto e separa cada palavra colocando-as em um array
+  const getTexts = response.data.content.map(text => {
+    const texto = RichText.asText(text.body);
+    const newArr = texto.split(' ');
+    return newArr;
+  });
+
+  const wordsCountArr = getTexts.map(el => el.length); // retorna a quantidade de palavras em cada array
+  const qtdWords = wordsCountArr.reduce((total, current) => total + current); // retorna a soma de todas as palavras
+  const readingTime = Math.ceil(qtdWords / 200); // 200 é a média de palavras por minuto de uma pessoa
+
   return {
     props: {
       post,
+      readingTime,
     },
   };
 };
