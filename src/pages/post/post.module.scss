@@ -49,6 +49,11 @@
       color: var(--gray-100);
     }
 
+    img {
+      width: 100%;
+      margin: 20px 0;
+    }
+
     & + section {
       margin-top: 40px;
     }
