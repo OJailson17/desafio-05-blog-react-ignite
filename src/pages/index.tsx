@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import { FiCalendar, FiUser } from 'react-icons/fi';
@@ -29,10 +30,39 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-export default function Home({
-  results,
-  next_page,
-}: PostPagination): JSX.Element {
+export default function Home({ postsPagination }: HomeProps): JSX.Element {
+  const { results, next_page } = postsPagination;
+
+  const [posts, setPosts] = useState<Post[]>(results);
+  const [hasNextPage, setHasNextPage] = useState(false);
+
+  const handleFetchData = async (): Promise<void> => {
+    const response = await fetch(next_page);
+    const data = await response.json();
+
+    // Formatação dos posts
+    const postsData = data.results.map(post => {
+      return {
+        uid: post.uid,
+        first_publication_date: post.first_publication_date,
+        data: {
+          title: post.data?.title,
+          subtitle: post.data.subtitle,
+          author: post.data.author,
+        },
+      };
+    });
+
+    const allPosts = posts.concat(postsData);
+    setPosts(allPosts);
+    setHasNextPage(false);
+  };
+
+  useEffect(() => {
+    if (next_page) setHasNextPage(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <Head>
@@ -40,7 +70,7 @@ export default function Home({
       </Head>
 
       <main className={styles.container}>
-        {results.map(post => (
+        {posts.map(post => (
           <Link href={`/post/${post.uid}`} key={post.uid}>
             <div>
               <h2>{post.data?.title}</h2>
@@ -56,6 +86,16 @@ export default function Home({
             </div>
           </Link>
         ))}
+
+        {hasNextPage ? (
+          <div className={styles.paginationContent}>
+            <button type="button" onClick={handleFetchData}>
+              Carregar mais posts
+            </button>
+          </div>
+        ) : (
+          ''
+        )}
       </main>
     </>
   );
@@ -67,7 +107,7 @@ export const getStaticProps: GetStaticProps = async () => {
     [Prismic.predicates.at('document.type', 'posts')],
     {
       fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
-      pageSize: 10,
+      pageSize: 2,
     }
   );
 
@@ -86,8 +126,10 @@ export const getStaticProps: GetStaticProps = async () => {
 
   return {
     props: {
-      results: posts,
-      next_page: postsResponse.next_page,
+      postsPagination: {
+        results: posts,
+        next_page: postsResponse.next_page,
+      },
     },
     revalidate: 60 * 60,
   };
