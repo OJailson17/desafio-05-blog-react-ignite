@@ -100,10 +100,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async context => {
-  const { slug } = context.params;
+export const getStaticProps: GetStaticProps = async ({
+  params,
+  preview = false,
+  previewData,
+}) => {
+  const { slug } = params;
   const prismic = getPrismicClient();
-  const response = await prismic.getByUID('posts', String(slug), {});
+  const response = await prismic.getByUID('posts', String(slug), {
+    ref: previewData?.ref ?? null,
+  });
 
   const post = {
     first_publication_date: formatDate(response.first_publication_date),
@@ -139,6 +145,7 @@ export const getStaticProps: GetStaticProps = async context => {
     props: {
       post,
       readingTime,
+      preview,
     },
   };
 };
