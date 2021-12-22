@@ -1,6 +1,7 @@
 /* eslint-disable react/no-danger */
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Prismic from '@prismicio/client';
 import { RichText } from 'prismic-dom';
@@ -33,9 +34,14 @@ interface Post {
 interface PostProps {
   post: Post;
   readingTime: number;
+  preview: boolean;
 }
 
-export default function Post({ post, readingTime }: PostProps): JSX.Element {
+export default function Post({
+  post,
+  readingTime,
+  preview,
+}: PostProps): JSX.Element {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -77,6 +83,14 @@ export default function Post({ post, readingTime }: PostProps): JSX.Element {
           ))}
         </div>
       </article>
+
+      {preview && (
+        <Link href="/api/exit-preview">
+          <aside className={commonStyles.exitPreviewContainer}>
+            <a>Sair do modo Preview</a>
+          </aside>
+        </Link>
+      )}
     </>
   );
 }

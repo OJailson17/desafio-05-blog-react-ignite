@@ -9,3 +9,16 @@
     }
   }
 }
+
+.exitPreviewContainer {
+  width: 50%;
+  height: 50px;
+  background-color: var(--white);
+  margin: 50px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
