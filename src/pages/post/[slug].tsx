@@ -2,6 +2,7 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Prismic from '@prismicio/client';
 import { RichText } from 'prismic-dom';
@@ -71,6 +72,10 @@ PostProps): JSX.Element {
 
   return (
     <>
+      <Head>
+        <title>{post.data?.title} | Blog</title>
+      </Head>
+
       <header className={styles.header}>
         <Image src={post.data.banner?.url} layout="fill" objectFit="cover" />
       </header>
