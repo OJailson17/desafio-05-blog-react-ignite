@@ -16,6 +16,7 @@ import styles from './post.module.scss';
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -31,17 +32,26 @@ interface Post {
   };
 }
 
+// interface SmallPost {
+//   title: string;
+//   uid: string;
+// }
+
 interface PostProps {
   post: Post;
   readingTime: number;
   preview: boolean;
+  // prevPost: SmallPost;
+  // nextPost: SmallPost;
 }
 
 export default function Post({
   post,
   readingTime,
   preview,
-}: PostProps): JSX.Element {
+}: // prevPost,
+// nextPost,
+PostProps): JSX.Element {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -52,6 +62,12 @@ export default function Post({
     );
   }
 
+  const postDate = post.first_publication_date;
+  const editDate = post.last_publication_date;
+
+  // Verifica se o post foi editado
+  const isEdit = editDate.split(',')[0] !== postDate;
+
   return (
     <>
       <header className={styles.header}>
@@ -60,7 +76,6 @@ export default function Post({
 
       <article className={styles.container}>
         <h1>{post.data.title}</h1>
-
         <div className={commonStyles.postInfo}>
           <span>
             <FiCalendar /> {post.first_publication_date}
@@ -71,8 +86,9 @@ export default function Post({
           <span>
             <FiClock /> {readingTime} min
           </span>
+          {/* <p>* editado em 19 mar 2021, às 15:49</p> */}
+          {isEdit && <p>* editado em {post.last_publication_date}</p>}
         </div>
-
         <div>
           {post.data.content.map(section => (
             <section key={section.heading}>
@@ -127,6 +143,7 @@ export const getStaticProps: GetStaticProps = async ({
 
   const post = {
     first_publication_date: formatDate(response.first_publication_date),
+    last_publication_date: formatDate(response.last_publication_date, true),
     data: {
       title: response.data?.title,
       banner: {
@@ -144,6 +161,38 @@ export const getStaticProps: GetStaticProps = async ({
     },
   };
 
+  // !TODO Buscar os posts para exibit o próximo e o anterior de maneira correta
+  // const nextResponse = await prismic.query(
+  //   Prismic.Predicates.at('document.type', 'posts'),
+  //   {
+  //     pageSize: 5,
+  //     after: response?.id,
+  //     orderings: '[document.first_publication_date desc]',
+  //   }
+  // );
+
+  // const prevResponse = await prismic.query(
+  //   Prismic.Predicates.at('document.type', 'posts'),
+  //   {
+  //     pageSize: 5,
+  //     after: response?.id,
+  //     orderings: '[document.first_publication_date]',
+  //   }
+  // );
+
+  // const nextObj = {
+  //   title: nextResponse?.results[0]?.data?.title,
+  //   uid: nextResponse?.results[0]?.uid,
+  // };
+
+  // const prevObj = {
+  //   title: prevResponse?.results[0]?.data?.title,
+  //   uid: prevResponse?.results[0]?.uid,
+  // };
+
+  // const nextPost = nextResponse.results[0] ? nextObj : null;
+  // const prevPost = prevResponse.results[0] ? prevObj : null;
+
   // Pega todo o texto e separa cada palavra colocando-as em um array
   const getTexts = response.data.content.map(text => {
     const texto = RichText.asText(text.body);
@@ -160,6 +209,8 @@ export const getStaticProps: GetStaticProps = async ({
       post,
       readingTime,
       preview,
+      // prevPost,
+      // nextPost,
     },
   };
 };
