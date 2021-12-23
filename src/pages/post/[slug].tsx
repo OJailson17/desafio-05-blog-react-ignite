@@ -13,6 +13,7 @@ import commonStyles from '../../styles/common.module.scss';
 import { formatDate } from '../../utils/formateDate';
 
 import styles from './post.module.scss';
+import { Comments } from '../../components/Comments';
 
 interface Post {
   first_publication_date: string | null;
@@ -99,6 +100,10 @@ PostProps): JSX.Element {
           ))}
         </div>
       </article>
+
+      <section className={styles.commentSection}>
+        <Comments />
+      </section>
 
       {preview && (
         <Link href="/api/exit-preview">
