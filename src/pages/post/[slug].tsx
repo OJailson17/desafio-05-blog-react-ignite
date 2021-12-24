@@ -1,5 +1,4 @@
 /* eslint-disable react/no-danger */
-import { useContext, useEffect } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,7 +15,6 @@ import { formatDate } from '../../utils/formateDate';
 
 import styles from './post.module.scss';
 import { Comments } from '../../components/Comments';
-import { CommentsContext } from '../../context';
 
 interface Post {
   uid: string;
@@ -58,13 +56,6 @@ export default function Post({
   nextPost,
 }: PostProps): JSX.Element {
   const router = useRouter();
-  const { comment, setComment } = useContext(CommentsContext);
-
-  useEffect(() => {
-    setComment('comments');
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [post.uid]);
 
   if (router.isFallback) {
     return (
@@ -142,7 +133,7 @@ export default function Post({
       </section>
 
       <section className={styles.commentSection}>
-        <Comments comment={comment} />
+        <Comments />
       </section>
 
       {preview && (
