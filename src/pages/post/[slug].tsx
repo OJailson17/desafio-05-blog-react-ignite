@@ -1,4 +1,5 @@
 /* eslint-disable react/no-danger */
+import { useContext, useEffect } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,8 +16,10 @@ import { formatDate } from '../../utils/formateDate';
 
 import styles from './post.module.scss';
 import { Comments } from '../../components/Comments';
+import { CommentsContext } from '../../context';
 
 interface Post {
+  uid: string;
   first_publication_date: string | null;
   last_publication_date: string | null;
   data: {
@@ -34,27 +37,34 @@ interface Post {
   };
 }
 
-// interface SmallPost {
-//   title: string;
-//   uid: string;
-// }
+interface SmallPost {
+  title: string;
+  uid: string;
+}
 
 interface PostProps {
   post: Post;
   readingTime: number;
   preview: boolean;
-  // prevPost: SmallPost;
-  // nextPost: SmallPost;
+  prevPost: SmallPost;
+  nextPost: SmallPost;
 }
 
 export default function Post({
   post,
   readingTime,
   preview,
-}: // prevPost,
-// nextPost,
-PostProps): JSX.Element {
+  prevPost,
+  nextPost,
+}: PostProps): JSX.Element {
   const router = useRouter();
+  const { comment, setComment } = useContext(CommentsContext);
+
+  useEffect(() => {
+    setComment('comments');
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [post.uid]);
 
   if (router.isFallback) {
     return (
@@ -106,8 +116,33 @@ PostProps): JSX.Element {
         </div>
       </article>
 
+      <div className={styles.separator} />
+
+      <section className={styles.paginationContainer}>
+        <div className={styles.left}>
+          {prevPost && (
+            <>
+              {prevPost?.title}
+              <Link href={`/post/${prevPost?.uid}`}>
+                <p>Post anterior</p>
+              </Link>
+            </>
+          )}
+        </div>
+        <div>
+          {nextPost && (
+            <>
+              <span>{nextPost?.title}</span>
+              <Link href={`/post/${nextPost?.uid}`}>
+                <p>Próximo post</p>
+              </Link>
+            </>
+          )}
+        </div>
+      </section>
+
       <section className={styles.commentSection}>
-        <Comments />
+        <Comments comment={comment} />
       </section>
 
       {preview && (
@@ -147,11 +182,15 @@ export const getStaticProps: GetStaticProps = async ({
 }) => {
   const { slug } = params;
   const prismic = getPrismicClient();
+
+  // Recupera o post pelo slug
   const response = await prismic.getByUID('posts', String(slug), {
     ref: previewData?.ref ?? null,
   });
 
+  // Formatação do post
   const post = {
+    uid: response?.uid,
     first_publication_date: formatDate(response.first_publication_date),
     last_publication_date: formatDate(response.last_publication_date, true),
     data: {
@@ -171,37 +210,31 @@ export const getStaticProps: GetStaticProps = async ({
     },
   };
 
-  // !TODO Buscar os posts para exibit o próximo e o anterior de maneira correta
-  // const nextResponse = await prismic.query(
-  //   Prismic.Predicates.at('document.type', 'posts'),
-  //   {
-  //     pageSize: 5,
-  //     after: response?.id,
-  //     orderings: '[document.first_publication_date desc]',
-  //   }
-  // );
+  // Recupera todos os 10 primeiros posts
+  const allPosts = await prismic.query(
+    Prismic.Predicates.at('document.type', 'posts'),
+    {
+      pageSize: 10,
+      fetch: ['posts.title', 'posts.uid'],
+    }
+  );
 
-  // const prevResponse = await prismic.query(
-  //   Prismic.Predicates.at('document.type', 'posts'),
-  //   {
-  //     pageSize: 5,
-  //     after: response?.id,
-  //     orderings: '[document.first_publication_date]',
-  //   }
-  // );
+  // Realiza a formatação desses posts
+  const posts = allPosts.results.map(p => {
+    return {
+      title: p.data?.title,
+      uid: p.uid,
+    };
+  });
 
-  // const nextObj = {
-  //   title: nextResponse?.results[0]?.data?.title,
-  //   uid: nextResponse?.results[0]?.uid,
-  // };
+  // Retorna em qual index está o post atual dentro do array allPosts
+  const postIndex = posts.findIndex(el => el.uid === slug);
 
-  // const prevObj = {
-  //   title: prevResponse?.results[0]?.data?.title,
-  //   uid: prevResponse?.results[0]?.uid,
-  // };
+  // Pega o index do post e diminui por um para obter o post anterior
+  const prevPost = posts[postIndex - 1] ?? null;
 
-  // const nextPost = nextResponse.results[0] ? nextObj : null;
-  // const prevPost = prevResponse.results[0] ? prevObj : null;
+  // Pega o index do post e soma por um para obter o próximo post
+  const nextPost = posts[postIndex + 1] ?? null;
 
   // Pega todo o texto e separa cada palavra colocando-as em um array
   const getTexts = response.data.content.map(text => {
@@ -219,8 +252,8 @@ export const getStaticProps: GetStaticProps = async ({
       post,
       readingTime,
       preview,
-      // prevPost,
-      // nextPost,
+      prevPost,
+      nextPost,
     },
   };
 };

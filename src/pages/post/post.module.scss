@@ -60,6 +60,46 @@
   }
 }
 
+.separator {
+  width: 50%;
+  height: 1px;
+  margin: 0px auto 30px;
+  background-color: var(--gray-100);
+  opacity: 0.3;
+}
+
+.paginationContainer {
+  width: 50%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+
+  div {
+    width: 50%;
+    font-size: 18px;
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 2rem 0 2rem 2rem;
+    // background-color: red;
+
+    p {
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--pink-900);
+      cursor: pointer;
+    }
+
+    &.left {
+      align-items: flex-start;
+      padding: 2rem 0 2rem 0;
+    }
+  }
+}
+
 .commentSection {
   margin: 80px 0;
 }
